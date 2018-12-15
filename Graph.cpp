@@ -3,7 +3,40 @@
 //
 
 #include "Graph.h"
+#include <vector>
 #include "Utils.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+using namespace std;
+
+Graph::Graph(string filename, bool verbose){
+    this->verbose = verbose;
+    ifstream stream(filename);
+    string line;
+    std::getline(stream, line);
+    this->n = std::stoi(line);
+    this->matrix = new int *[n];
+    for (int i = 0; i < n; i++) {
+        this->matrix[i] = new int[n];
+        for (int j = 0; j < n; j++) {
+            this->matrix[i][j] = 0;
+        }
+    }
+
+    while(std::getline(stream, line)) {
+        std::istringstream s(line);
+        std::string field;
+        string start, end, cost;
+        getline(s, start, ';') ;
+        getline(s, end, ';') ;
+        getline(s, cost);
+        cout << start << "\t<->\t" << end << "\t=\t" << cost << endl;
+        this->matrix[stoi(start)][stoi(end)] = stoi(cost);
+        this->matrix[stoi(end)][stoi(start)] = stoi(cost);
+    }
+}
 
 Graph::Graph(int vertices, int edges, bool verbose) {
     this->verbose = verbose;

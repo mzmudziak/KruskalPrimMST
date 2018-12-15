@@ -20,6 +20,7 @@ private:
     void union1(int* parent, int i, int j);
     int shortest(const int *distance, const bool *visited);
 public:
+    Graph(string filename, bool verbose);
     explicit Graph(int n, int k, bool verbose);
     void print();
     void prim();

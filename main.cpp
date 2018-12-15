@@ -17,21 +17,10 @@ int main() {
     switch (mode) {
         case 'a':
         case 'A': {
-            int n, k;
-            cout << "[A] - Single test" << endl;
-            cout << "How many vertices?" << endl;
-            cin >> n;
-            int maxEdges = n * (n - 1) / 2;
-            auto minEdges = static_cast<int>(ceil(0.25 * n * (n - 1)));
-            uniform_int_distribution<int> uni(minEdges, maxEdges);
-            cout << "How many edges? ("<< minEdges << ".." << maxEdges << ")" << endl;
-            cin >> k;
-            while (k < minEdges || k > maxEdges) {
-                cin >> k;
-            }
-            auto *g = new Graph(n, k, true);
-            
-            // Execute PRIMs algorithm
+            cout << "[A] - Test from file" << endl;
+            string filename = "/Users/michal/git/umcs/algorithms/prim/prim/prim/PrimKruska_data.txt";
+            cout << "Reading from file: " << filename << endl;
+            auto *g = new Graph(filename, true);
             g->print();
             auto start = chrono::steady_clock::now();
             g->prim();
