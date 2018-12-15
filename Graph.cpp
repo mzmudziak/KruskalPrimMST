@@ -9,8 +9,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <functional>
-
 #include <queue>
 
 using namespace std;
@@ -122,26 +120,29 @@ void Graph::print(int parent[]){
 }
 
 void Graph::prim() {
-    int parent[n];
+    int parents[n];
     int key[n];
-    bool mstSet[n];
+    bool mst[n];
+    
+    // init all keys to INT_MAX
+    // init all mst to false
     for (int i = 0; i < n; i++) {
         key[i] = INT_MAX;
-        mstSet[i] = false;
+        mst[i] = false;
     }
     key[0] = 0;
-    parent[0] = -1;
+    parents[0] = -1;
     
-    for (int count = 0; count < n-1; count++)        {
-        int u = shortest(key, mstSet);
-        mstSet[u] = true;
-        for (int i = 0; i < n; i++)
-            if (matrix[u][i] && mstSet[i] == false && matrix[u][i] < key[i]) {
-                parent[i] = u;
-                key[i] = matrix[u][i];
+    for (int i = 0; i < n-1; i++)        {
+        int currentMin = shortest(key, mst);
+        mst[currentMin] = true;
+        for (int j = 0; j < n; j++)
+            if (matrix[currentMin][j] && mst[j] == false && matrix[currentMin][j] < key[j]) {
+                parents[j] = currentMin;
+                key[j] = matrix[currentMin][j];
             }
     }
-    print(parent);
+    print(parents);
 }
 
 int Graph::findParent(int* parent, int i) {
