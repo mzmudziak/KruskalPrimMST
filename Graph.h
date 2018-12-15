@@ -16,8 +16,8 @@ private:
     bool verbose;
     int **matrix;
     void print(int parent[]);
-    int find(int* parent, int i);
-    void union1(int* parent, int i, int j);
+    int findParent(int* parent, int i);
+    void parentUnion(int* parent, int i, int j);
     int shortest(const int *distance, const bool *visited);
 public:
     Graph(string filename, bool verbose);
@@ -25,5 +25,6 @@ public:
     void print();
     void prim();
     void kruskal();
+    void kruskalPQ();
 };
 #endif

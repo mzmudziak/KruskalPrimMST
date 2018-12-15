@@ -9,6 +9,10 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <functional>
+
+#include <queue>
+
 using namespace std;
 
 Graph::Graph(string filename, bool verbose){
@@ -114,7 +118,7 @@ void Graph::print(int parent[]){
         }
         minWeight += currMinWeight;
     }
-    cout << "Prim" << '\t' << "- cost:" << '\t' << "" << minWeight << "" << '\t' << "time: ";
+    cout << endl << "Prim" << '\t' << "-" << '\t' << "cost:" << '\t' << "" << minWeight << "" << '\t' << "time: ";
 }
 
 void Graph::prim() {
@@ -140,47 +144,92 @@ void Graph::prim() {
     print(parent);
 }
 
-int Graph::find(int* parent, int i){
-    while (parent[i] != i) {
-        i = parent[i];
+int Graph::findParent(int* parent, int i) {
+    if (parent[i] == i) {
+        return i;
     }
-    return i;
+    parent[i] = findParent(parent, parent[i]);
+    return parent[i];
 }
 
-void Graph::union1(int* parent, int i, int j)
-{
-    int a = find(parent, i);
-    int b = find(parent, j);
-    parent[a] = b;
+
+void Graph::parentUnion(int* parents, int i, int j){
+    int a = findParent(parents, i);
+    int b = findParent(parents, j);
+    parents[a] = b;
 }
 
 void Graph::kruskal() {
-    int parent[n];
-    int minWeight = 0;
+    int parents[n];
+    int mstWeight = 0;
     for (int i = 0; i < n; i++) {
-        parent[i] = i;
+        parents[i] = i;
     }
-    int edge_count = 0;
-    while (edge_count < n - 1) {
-        int min = INT_MAX;
-        int a = -1;
-        int b = -1;
+    int edgesVisited = 0;
+    while (edgesVisited < n - 1) {
+        int currentMinEdge = INT_MAX;
+        int startX = -1;
+        int startY = -1;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (find(parent, i) != find(parent, j) && matrix[i][j] != 0 && matrix[i][j] < min) {
-                    min = matrix[i][j];
-                    a = i;
-                    b = j;
+                if (findParent(parents, i) != findParent(parents, j) && matrix[i][j] != 0 && matrix[i][j] < currentMinEdge) {
+                    currentMinEdge = matrix[i][j];
+                    startX = i;
+                    startY = j;
                 }
             }
         }
         
-        union1(parent, a, b);
+        parentUnion(parents, startX, startY);
         if (verbose) {
-            cout << a << " -> " << b << " (" << min << ")" << endl;
+            cout << startX << " -> " << startY << " (" << currentMinEdge << ")" << endl;
         }
-        minWeight += min;
-        edge_count++;
+        mstWeight += currentMinEdge;
+        edgesVisited++;
     }
-    cout << endl << "Kruskal" << '\t' << "- cost:" << '\t' << "" << minWeight << "" << '\t' << "time: ";
+    cout << endl << "Kruskal" << '\t' << "-" << '\t' << "cost:" << '\t' << "" << mstWeight << "" << '\t' << "time: ";
+}
+
+struct edge {
+    int start;
+    int end;
+    int cost;
+};
+
+void Graph::kruskalPQ() {
+    auto cmp = [](edge left, edge right) { return (left.cost > right.cost);};
+    std::priority_queue<edge, std::vector<edge>, decltype(cmp)> edges(cmp);
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (matrix[i][j] != 0) {
+                edge e;
+                e.start = i;
+                e.end = j;
+                e.cost = matrix[i][j];
+                edges.push(e);
+            }
+        }
+    }
+    
+    int parents[n];
+    int mstWeight = 0;
+    
+    for (int i = 0; i < n; i++) {
+        parents[i] = i;
+    }
+    
+    while(!edges.empty()) {
+        edge e = edges.top();
+        edges.pop();
+
+        if (findParent(parents, e.start) != findParent(parents, e.end)) {
+            if (verbose) {
+                cout << e.start << " -> " << e.end << " (" << e.cost << ")" << endl;
+            }
+            parents[e.start] = findParent(parents, e.end);
+            mstWeight += e.cost;
+        }
+    }
+    
+    cout << endl << "Krus PQ" << '\t' << "-" << '\t' << "cost:" << '\t' << "" << mstWeight << "" << '\t' << "time: ";
 }
