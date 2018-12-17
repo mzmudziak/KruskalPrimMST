@@ -227,7 +227,7 @@ void Graph::kruskalPQ() {
             if (verbose) {
                 cout << e.start << " -> " << e.end << " (" << e.cost << ")" << endl;
             }
-            parents[e.start] = findParent(parents, e.end);
+            parentUnion(parents, e.start, e.end);
             mstWeight += e.cost;
         }
     }
