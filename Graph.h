@@ -9,6 +9,14 @@
 #include <list>
 
 using namespace std;
+struct edge {
+    int start;
+    int end;
+    int cost;
+    bool operator<(const edge& rhs) const{
+        return cost > rhs.cost;
+    }
+};
 
 class Graph {
 private:
@@ -22,9 +30,10 @@ private:
 public:
     Graph(string filename, bool verbose);
     explicit Graph(int n, int k, bool verbose);
+    priority_queue<edge, std::vector<edge>> getPriorityQueue();
     void print();
     void prim();
     void kruskal();
-    void kruskalPQ();
+    void kruskalPQ(priority_queue<edge, std::vector<edge>> pq);
 };
 #endif

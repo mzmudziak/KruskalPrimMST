@@ -191,15 +191,12 @@ void Graph::kruskal() {
     cout << endl << "Kruskal" << '\t' << "-" << '\t' << "cost:" << '\t' << "" << mstWeight << "" << '\t' << "time: ";
 }
 
-struct edge {
-    int start;
-    int end;
-    int cost;
-};
 
-void Graph::kruskalPQ() {
-    auto cmp = [](edge left, edge right) { return (left.cost > right.cost);};
-    std::priority_queue<edge, std::vector<edge>, decltype(cmp)> edges(cmp);
+
+
+
+priority_queue<edge, std::vector<edge>> Graph::getPriorityQueue() {
+    std::priority_queue<edge, std::vector<edge>> edges;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < i; j++) {
             if (matrix[i][j] != 0) {
@@ -211,7 +208,10 @@ void Graph::kruskalPQ() {
             }
         }
     }
-    
+    return edges;
+}
+
+void Graph::kruskalPQ(priority_queue<edge, std::vector<edge>> edges) {
     int parents[n];
     int mstWeight = 0;
     

@@ -36,10 +36,10 @@ int main() {
             auto diffK = chrono::duration<double, nano>(endK - startK).count();
             cout << diffK << " ";
             cout << "Execution: " << chrono::duration<double, nano>(diffK).count() << " ns" << endl;
-            
+            priority_queue<edge, std::vector<edge>> pq = graph->getPriorityQueue();
             // Execute KRUSKALs algorithm using Priority Queue
             auto startK_PQ = chrono::steady_clock::now();
-            graph->kruskalPQ();
+            graph->kruskalPQ(pq);
             auto endK_PQ = chrono::steady_clock::now();
             auto diffK_PQ = chrono::duration<double, nano>(endK_PQ - startK_PQ).count();
             cout << diffK_PQ << " ";
@@ -91,8 +91,9 @@ int main() {
                     totalKruskal += chrono::duration<double, nano>(diffK).count();
                     
                     // Execute KRUSKALs algorithm using Priority Queue made on the fly :)
+                    priority_queue<edge, std::vector<edge>> pq = graph->getPriorityQueue();
                     auto startK_PQ = chrono::steady_clock::now();
-                    graph->kruskalPQ();
+                    graph->kruskalPQ(pq);
                     auto endK_PQ = chrono::steady_clock::now();
                     auto diffK_PQ = chrono::duration<double, nano>(endK_PQ - startK_PQ).count();
                     cout << diffK_PQ << " ";
